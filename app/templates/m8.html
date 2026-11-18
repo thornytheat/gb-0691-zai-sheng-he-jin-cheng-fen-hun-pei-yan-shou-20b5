@@ -1,0 +1,4 @@
+{% extends 'base.html' %}
+{% block visual_title %}烧损补偿依据{% endblock %}
+{% block stage_visual %}<div class="muted">下一炉元素补偿（目标为配方区间中点）</div>{% if current.compensation %}<table><thead><tr>{% for key in current.compensation[0] %}<th>{{key}}</th>{% endfor %}</tr></thead><tbody>{% for row in current.compensation %}<tr>{% for value in row.values() %}<td title="{{value}}">{{value|display}}</td>{% endfor %}</tr>{% endfor %}</tbody></table>{% for row in current.compensation %}<p>{{row['元素']}}　<strong>{{row['依据来源']}}</strong>　<span class="muted">{{row['依据说明']}}</span></p>{% endfor %}{% else %}<div class="empty">暂无可结算炉次。</div>{% endif %}{% endblock %}
+{% block extra_input %}<details open><summary>提交出炉实测CSV（batch,element,tap_mass,unit,tap_assay）</summary><textarea id="tap-csv" aria-label="出炉CSV">{{tap_sample}}</textarea><div class="controls"><button id="tap-submit">提交出炉实测</button></div></details>{% endblock %}

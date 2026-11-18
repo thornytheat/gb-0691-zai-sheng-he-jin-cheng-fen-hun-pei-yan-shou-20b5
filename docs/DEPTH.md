@@ -15,6 +15,7 @@
 | M5 不确定区间 | 运行不确定区间并复核证据 | `POST /api/m5`；`/work/5` | `app/modules/m5_uncertainty/rules.py` | `tests/test_m5.py` |
 | M6 验收对照 | 运行验收对照并复核证据 | `POST /api/m6`；`/work/6` | `app/modules/m6_acceptance/rules.py` | `tests/test_m6.py` |
 | M7 复配批次 | 运行复配批次并复核证据 | `POST /api/m7`；`/work/7` | `app/modules/m7_reblend/rules.py` | `tests/test_m7.py` |
+| M8 烧损补偿 | 提交出炉实测，查看炉次对照与下一炉补偿依据 | `POST /api/m8`、`POST /api/m8/tap`；`/work/8` | `app/modules/m8_yield/rules.py` | `tests/test_m8.py` |
 
 ## 陷阱登记
 
@@ -28,6 +29,10 @@
 | TRAP-15 | 吨与千克 | 静默覆盖或误计 | 显式裁决并保留证据 | `app/modules/m2_assay/rules.py` | `tests/test_m2.py::test_units` |
 | TRAP-19 | 批号元数据冲突优先 | 静默覆盖或误计 | 显式裁决并保留证据 | `app/modules/m3_recipe/rules.py` | `tests/test_m3.py::test_conflicting_lot_mass` |
 | TRAP-25 | 配方版本锁定 | 静默覆盖或误计 | 显式裁决并保留证据 | `app/modules/m3_recipe/rules.py` | `tests/test_m3.py::test_version_lock` |
+| TRAP-26 | 出炉重跑重复计炉 | 重复提交把同一炉算两次 | 同键同值幂等跳过，异值隔离保留原记录 | `app/store.py` | `tests/test_m8.py::test_rerun_never_double_counts` |
+| TRAP-27 | 估算冒充验收 | 出炉未到按经验值直接验收 | 实测未到或计量不全保留待核，默认经验值仅作补偿依据并显式标注 | `app/modules/m8_yield/rules.py` | `tests/test_m8.py::test_estimate_never_counts_as_acceptance` |
+| TRAP-28 | 异常炉次带偏配方 | 照搬上一炉收得率 | 最近5次已核炉次中位数，偏离超5个百分点剔除并列名 | `app/modules/m8_yield/rules.py` | `tests/test_m8.py::test_outlier_furnace_excluded` |
+| TRAP-29 | 中断后无法续跑 | 部分提交后重跑全量重复计数 | 出炉记录持久化，重跑只补缺失记录 | `app/modules/m8_yield/service.py` | `tests/test_m8.py::test_resume_after_interrupted_submit` |
 
 ## 对账规则
 
